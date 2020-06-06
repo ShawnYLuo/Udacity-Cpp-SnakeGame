@@ -37,7 +37,8 @@ void Snake::UpdateHead() {
       head_x += speed;
       break;
   }
-
+  
+    
   // Wrap the Snake around to the beginning if going off of the screen.
   head_x = fmod(head_x + grid_width, grid_width);
   head_y = fmod(head_y + grid_height, grid_height);
@@ -47,15 +48,27 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   // Add previous head location to vector
   body.push_back(prev_head_cell);
 
-  if (!growing) {
-    // Remove the tail from the vector.
+  
+  if (shrinking) {
     body.erase(body.begin());
-  } else {
+    if (body.size()>0){
+      body.erase(body.begin());
+      size--;
+    }
+    shrinking = false;
+  } else if (growing) {
     growing = false;
     size++;
+  } else {
+    // Remove the tail from the vector.
+    body.erase(body.begin());
   }
 
   // Check if the snake has died.
+  /*
+  if (current_head_cell.x == grid_width-1 || current_head_cell.x == 0 || current_head_cell.y == grid_height-1 || current_head_cell.y == 0){
+    alive = false;
+  }*/
   for (auto const &item : body) {
     if (current_head_cell.x == item.x && current_head_cell.y == item.y) {
       alive = false;
@@ -64,6 +77,7 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
 }
 
 void Snake::GrowBody() { growing = true; }
+void Snake::ShrinkBody() { shrinking = true; }
 
 // Inefficient method to check if cell is occupied by snake.
 bool Snake::SnakeCell(int x, int y) {

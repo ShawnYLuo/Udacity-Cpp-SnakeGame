@@ -29,3 +29,14 @@ In this project, you can build your own C++ application or extend this Snake gam
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./SnakeGame`.
+
+## Added Features
+0. The snake dies if it hit the boudary (not fun to play with).
+1. Pink object will reduce the snake length by 1 when eaten. 
+2. Green object will slow down the snake by 0.2 (to at least the original speed).
+
+## Rubric Points Addressed
+
+0. The original code already satisfies more than 5 rubric points. Therefore will not be discussed in the following.
+1. New objects satisfy first 5 points in OOP rubric and all 6 points in Memory Management. See "NewObj.h" and "NewObj.cpp" (to do).
+2. New objects are placed concurrently, satisfying all 4 concurrency rubric points (to do).
