@@ -8,13 +8,13 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_w(0, static_cast<int>(grid_width-1)),
       random_h(0, static_cast<int>(grid_height-1)) {
   PlaceFood();
-  PlaceShrink();
-  PlaceSlow();
+  obj.Vanish();
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
+  Uint32 obj_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
@@ -26,8 +26,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
-    Update();
-    renderer.Render(snake, food, shrink, slow);
+    Update( running, obj_timestamp );
+    renderer.Render(snake, food, obj);
 
     frame_end = SDL_GetTicks();
 
@@ -38,7 +38,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, snake.size, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -59,7 +59,7 @@ void Game::PlaceFood() {
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if (!snake.SnakeCell(x, y)) {
+    if (!snake.SnakeCell(x, y) && x!=obj.GetX() && y!=obj.GetY()) {
       food.x = x;
       food.y = y;
       return;
@@ -67,60 +67,48 @@ void Game::PlaceFood() {
   }
 }
 
-void Game::PlaceShrink() {
-  int x, y;
-  while (true) {
-    x = random_w(engine);
-    y = random_h(engine);
-    // Check that the location is not occupied by a snake item or a food before placing
-    // shrink.
-    if (!snake.SnakeCell(x, y) && food.x!=x && food.y!=y) {
-      shrink.x = x;
-      shrink.y = y;
-      return;
-    }
-  }
-}
 
-void Game::PlaceSlow() {
-  int x, y;
-  while (true) {
-    x = random_w(engine);
-    y = random_h(engine);
-    // Check that the location is not occupied by a snake item or a food before placing
-    // shrink.
-    if (!snake.SnakeCell(x, y) && food.x!=x && food.y!=y  && shrink.x!=x && shrink.y!=y) {
-      slow.x = x;
-      slow.y = y;
-      return;
-    }
-  }
-}
 
-void Game::Update() {
+
+void Game::Update(bool &running, Uint32 &obj_timestamp) {
   if (!snake.alive) return;
-
+  Uint32 obj_now = SDL_GetTicks();
+  if (obj_now - obj_timestamp > 10000 && !obj.isExist()){
+    int x, y;
+    while (true) {
+      x = random_w(engine);
+      y = random_h(engine);
+      // Check that the location is not occupied by a snake item before placing
+      // food.
+      if (!snake.SnakeCell(x, y) && x!=food.x && y!=food.y) {
+        break;
+      }
+    }
+    obj.Appear(x, y);
+    obj_timestamp = obj_now;
+  }
+  
+  if (obj.isExist() && obj_now-obj._last > 5000){
+    obj.Vanish();
+    obj_timestamp = obj_now;
+  }
   snake.Update();
 
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
   
-  // Check if there's food or shrink over here
+  // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
     score++;
     PlaceFood();
     // Grow snake and increase speed.
     snake.GrowBody();
     snake.speed += 0.02;
-  }else if (shrink.x == new_x && shrink.y == new_y) {
-    PlaceShrink();
-    // Shrink snake length by 1.
-    snake.ShrinkBody();
-  }else if (slow.x == new_x && slow.y == new_y) {
-    PlaceSlow();
-    snake.speed = snake.speed>0.2?snake.speed-0.2:0.1;
-    
+  }else if (obj.GetX() == new_x && obj.GetY() == new_y) {
+    obj.Activate(std::make_shared<Snake>(snake));
+    obj_timestamp = obj_now;
   }
+  
 }
 
 int Game::GetScore() const { return score; }

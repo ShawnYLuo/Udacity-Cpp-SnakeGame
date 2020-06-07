@@ -38,7 +38,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food, SDL_Point const &shrink, SDL_Point const &slow) {
+void Renderer::Render(Snake const snake, SDL_Point const &food, Newobj &obj) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -53,18 +53,26 @@ void Renderer::Render(Snake const snake, SDL_Point const &food, SDL_Point const 
   block.y = food.y * block.h;
   SDL_RenderFillRect(sdl_renderer, &block);
   
-  // Render shrink
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x66, 0xFF, 0xFF);
-  block.x = shrink.x * block.w;
-  block.y = shrink.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
+  // Render object
+  if (obj.isExist()){
+    Newobj::ObjType type = obj.GetType();
+    switch(type)
+    {
+      case Newobj::ObjType::shrink:
+        SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x80, 0xFF, 0xFF);
+        break;
+      case Newobj::ObjType::slow:
+        SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x99, 0x00, 0xFF);
+        break;
+      case Newobj::ObjType::acc:
+        SDL_SetRenderDrawColor(sdl_renderer, 0xCC, 0x00, 0x00, 0xFF);
+        break;
+    }
+    block.x = obj.GetX() * block.w;
+    block.y = obj.GetY() * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
+  }
   
-  // Render slow
-  SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x99, 0x00, 0xFF);
-  block.x = slow.x * block.w;
-  block.y = slow.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
-
   // Render snake's body
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
   for (SDL_Point const &point : snake.body) {
@@ -87,7 +95,7 @@ void Renderer::Render(Snake const snake, SDL_Point const &food, SDL_Point const 
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+void Renderer::UpdateWindowTitle(int score, int size, int fps) {
+  std::string title{"Score: " + std::to_string(score) + " Snake Length: " + std::to_string(size) +" FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }

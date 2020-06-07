@@ -1,6 +1,7 @@
 #include "snake.h"
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 void Snake::Update() {
   SDL_Point prev_cell{
@@ -48,15 +49,14 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   // Add previous head location to vector
   body.push_back(prev_head_cell);
 
-  
-  if (shrinking) {
+  if (shrinking){
+    shrinking = false;
     body.erase(body.begin());
-    if (body.size()>0){
+    if (body.size()>1){
       body.erase(body.begin());
       size--;
     }
-    shrinking = false;
-  } else if (growing) {
+  }else if (growing) {
     growing = false;
     size++;
   } else {
@@ -65,10 +65,11 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   }
 
   // Check if the snake has died.
-  /*
+/*  // Snake dies if head hits boundary
   if (current_head_cell.x == grid_width-1 || current_head_cell.x == 0 || current_head_cell.y == grid_height-1 || current_head_cell.y == 0){
     alive = false;
   }*/
+  // Snake dies if head hits its own body
   for (auto const &item : body) {
     if (current_head_cell.x == item.x && current_head_cell.y == item.y) {
       alive = false;
@@ -76,8 +77,8 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   }
 }
 
-void Snake::GrowBody() { growing = true; }
-void Snake::ShrinkBody() { shrinking = true; }
+void Snake::GrowBody() { growing = true;}
+void Snake::ShrinkBody() { shrinking = true;}
 
 // Inefficient method to check if cell is occupied by snake.
 bool Snake::SnakeCell(int x, int y) {

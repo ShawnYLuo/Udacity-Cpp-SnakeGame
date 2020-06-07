@@ -32,11 +32,13 @@ In this project, you can build your own C++ application or extend this Snake gam
 
 ## Added Features
 0. The snake dies if it hit the boudary (not fun to play with).
-1. Pink object will reduce the snake length by 1 when eaten. 
-2. Green object will slow down the snake by 0.2 (to at least the original speed).
+1. The title also shows snake length.
+2. Two reward objects other than food are added. Blue object will reduce the snake length by 1 when eaten. Green object will slow down the snake by 0.1 (to at least the original speed).
+3. A penalty object colored in red is added, which will increase the speed by 0.02.
+4. One of the 3 new objects will be placed every few seconds and will disappear shortly if not eaten.
 
 ## Rubric Points Addressed
 
-0. The original code already satisfies more than 5 rubric points. Therefore will not be discussed in the following.
-1. New objects satisfy first 5 points in OOP rubric and all 6 points in Memory Management. See "NewObj.h" and "NewObj.cpp" (to do).
-2. New objects are placed concurrently, satisfying all 4 concurrency rubric points (to do).
+0. The original code already meets more than 5 rubric points, which are not included in the following.
+1. Loop, function, I/O rubric #1 is met in various locations.
+2. New objects satisfy first 5 points in OOP rubric and points 1, 3, 6 in Memory Management. See "NewObj.h" and "NewObj.cpp" (to do).

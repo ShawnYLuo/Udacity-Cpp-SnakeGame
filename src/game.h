@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
+#include "newobj.h"
 #include "snake.h"
 
 class Game {
@@ -18,8 +19,7 @@ class Game {
  private:
   Snake snake;
   SDL_Point food;
-  SDL_Point shrink;
-  SDL_Point slow;
+  Newobj obj;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -29,9 +29,8 @@ class Game {
   int score{0};
 
   void PlaceFood();
-  void PlaceShrink();
-  void PlaceSlow();
-  void Update();
+  void Update(bool &running, Uint32 &obj_timestamp);
 };
+
 
 #endif

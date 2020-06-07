@@ -27,6 +27,18 @@ controller.h
 /home/workspace/CppND-Capstone-Snake-Game/src/controller.h
 renderer.h
 /home/workspace/CppND-Capstone-Snake-Game/src/renderer.h
+newobj.h
+/home/workspace/CppND-Capstone-Snake-Game/src/newobj.h
+snake.h
+/home/workspace/CppND-Capstone-Snake-Game/src/snake.h
+
+/home/workspace/CppND-Capstone-Snake-Game/src/newobj.h
+random
+-
+memory
+-
+SDL.h
+/home/workspace/CppND-Capstone-Snake-Game/src/SDL.h
 snake.h
 /home/workspace/CppND-Capstone-Snake-Game/src/snake.h
 
@@ -37,6 +49,8 @@ SDL.h
 /home/workspace/CppND-Capstone-Snake-Game/src/SDL.h
 snake.h
 /home/workspace/CppND-Capstone-Snake-Game/src/snake.h
+newobj.h
+/home/workspace/CppND-Capstone-Snake-Game/src/newobj.h
 
 /home/workspace/CppND-Capstone-Snake-Game/src/snake.h
 vector
